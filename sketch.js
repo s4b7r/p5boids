@@ -50,10 +50,10 @@ const BOID_VIEWDIST_ALIGNMENT = 100;
 const BIOD_FACTOR_ALIGNMENT = 1e2;
 
 class Boid {
-  constructor(pos_x, pos_y) {
+  constructor(pos_x, pos_y, ori) {
     this.pos_x = pos_x;
     this.pos_y = pos_y;
-    this.orientation = 0.;
+    this.orientation = ori;
     
     this.speed = 1;
 
@@ -271,7 +271,9 @@ function setup() {
   createCanvas(FIELD_WIDTH, FIELD_HEIGHT);
 
   for (boid_id = 0; boid_id < NUM_BOIDS; boid_id++) {
-    boids.push(new Boid(random(FIELD_WIDTH - BOID_LEN_FRONT - BOID_LEN_BACK), random(FIELD_HEIGHT - BOID_LEN_FRONT - BOID_LEN_BACK)));
+    boids.push(new Boid(random(FIELD_WIDTH - BOID_LEN_FRONT - BOID_LEN_BACK),
+                        random(FIELD_HEIGHT - BOID_LEN_FRONT - BOID_LEN_BACK),
+                        random(0, TWO_PI)));
   }
   boids[0].draw_debug = true;
 }
