@@ -42,8 +42,10 @@ const BOID_LEN_BACK = BOID_LEN_FRONT / 2;
 const BOID_BACK_ANGLE = .4
 const BOID_ORIENTATION_INERTIA = .96;
 const BOID_VIEWDIST_CENTER = 150;
-const BOID_FACTOR_AGAINST_COLLISION = 1e10;
+const BOID_FACTOR_AGAINST_COLLISION = 1e9;
 const BOID_VIEWDIST_AGAINST_COLLISION = 50;
+const BOID_VIEWDIST_AGAINST_WALL = 100;
+const BOID_FACTOR_AGAINST_WALL = 1e11;
 
 class Boid {
   constructor(pos_x, pos_y) {
@@ -54,6 +56,8 @@ class Boid {
     this.speed = 1;
 
     this.viewdist_center = BOID_VIEWDIST_CENTER;
+    this.factor_against_wall = BOID_FACTOR_AGAINST_WALL;
+    this.viewdist_against_wall = BOID_VIEWDIST_AGAINST_WALL;
 
     this._draw_debug = false;
   }
@@ -88,6 +92,10 @@ class Boid {
     target_direction.x += direction_against_collisions.x * BOID_FACTOR_AGAINST_COLLISION;
     target_direction.y += direction_against_collisions.y * BOID_FACTOR_AGAINST_COLLISION;
 
+    var direction_against_wall = this.get_direction_against_wall();
+    target_direction.x += direction_against_wall.x * this.factor_against_wall;
+    target_direction.y += direction_against_wall.y * this.factor_against_wall;
+
     if (this._draw_debug) {
       stroke('yellow');
       line(this.pos_x, this.pos_y, this.pos_x + target_direction.x * 10, this.pos_y + target_direction.y * 10)
@@ -96,6 +104,23 @@ class Boid {
 
     this.pos_x += this.speed * cos(this.orientation);
     this.pos_y += this.speed * sin(this.orientation);
+  }
+
+  get_direction_against_wall() {
+    var fake_boids = [];
+    if (this.pos_x <= 0 + this.viewdist_against_wall) {
+      fake_boids.push({position: {x: 0, y: this.pos_y}});
+    }
+    if (this.pos_x >= FIELD_WIDTH - this.viewdist_against_wall) {
+      fake_boids.push({position: {x: FIELD_WIDTH, y: this.pos_y}});
+    }
+    if (this.pos_y <= 0 + this.viewdist_against_wall) {
+      fake_boids.push({position: {x: this.pos_x, y: 0}});
+    }
+    if (this.pos_y >= FIELD_WIDTH - this.viewdist_against_wall) {
+      fake_boids.push({position: {x: this.pos_x, y: FIELD_HEIGHT}});
+    }
+    return this.get_direction_against_collisions(fake_boids);
   }
 
   get_direction_against_collisions(boids) {
