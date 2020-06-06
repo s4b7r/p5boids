@@ -63,9 +63,25 @@ class Boid {
   }
 
   step() {
-    this.steer_toward_center_of_mass(boids);
+    var target_direction_for_center_of_mass = this.get_direction_for_center_of_mass(boids);
+    this.steer_toward_direction(target_direction_for_center_of_mass);
     this.pos_x += this.speed * cos(this.orientation);
     this.pos_y += this.speed * sin(this.orientation);
+  }
+
+  steer_toward_orientation(target_orientation) {
+    var orientation_difference = target_orientation - rad_into_nPi2Pi(this.orientation);
+    orientation_difference = rad_into_nPi2Pi(orientation_difference);
+    this.orientation += orientation_difference * (1 - BOID_ORIENTATION_INERTIA);
+  }
+
+  steer_toward_direction(direction) {
+    var target_orientation = atan2(direction.y, direction.x);
+    this.steer_toward_orientation(target_orientation);
+  }
+
+  get_direction_for_center_of_mass(boids) {
+    return this.get_target_direction_for_position(Boid.get_boids_center_of_mass(boids));
   }
 
   steer_toward_center_of_mass(boids) {
@@ -73,13 +89,19 @@ class Boid {
     this.steer_toward(target);
   }
 
-  steer_toward(target_pos) {
+  get_target_direction_for_position(target_pos) {
     var target_vector_x = target_pos.x - this.pos_x;
     var target_vector_y = target_pos.y - this.pos_y;
-    var target_orientation = atan2(target_vector_y, target_vector_x);
-    var orientation_difference = target_orientation - rad_into_nPi2Pi(this.orientation);
-    orientation_difference = rad_into_nPi2Pi(orientation_difference);
-    this.orientation += orientation_difference * (1 - BOID_ORIENTATION_INERTIA);
+    var vector_length = sqrt(pow(target_vector_x, 2) + pow(target_vector_y, 2));
+    return {
+      x: target_vector_x / vector_length,
+      y: target_vector_y / vector_length
+    };
+  }
+
+  steer_toward(target_pos) {
+    var target_direction = this.get_target_direction_for_position(target_pos);
+    this.steer_toward_direction(target_direction);
   }
 
   static get_boids_center_of_mass(boids) {
