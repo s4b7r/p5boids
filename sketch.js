@@ -28,9 +28,9 @@ const BOID_LEN_BACK = BOID_LEN_FRONT / 2;
 const BOID_BACK_ANGLE = .4
 
 class Boid {
-  constructor() {
-    this.pos_x = 50;
-    this.pos_y = 50;
+  constructor(pos_x, pos_y) {
+    this.pos_x = pos_x;
+    this.pos_y = pos_y;
     this.orientation = 0.;
     
     this.speed = 1;
@@ -57,10 +57,13 @@ class Boid {
   }
 }
 
-var boid;
+var boids = [];
 
 function setup() {
-  boid = new Boid();
+  createCanvas(500, 500);
+  
+  boids.push(new Boid(50, 50));
+  boids.push(new Boid(100, 100));
 }
 
 function draw() {
@@ -69,6 +72,8 @@ function draw() {
   draw_coord_arrow(0., color('red'));
   draw_coord_arrow(HALF_PI, color('green'));
 
-  boid.step();
-  boid.draw();
+  boids.forEach(function(boid, boid_id, boids_) {
+    boid.step();
+    boid.draw();
+  })
 }
