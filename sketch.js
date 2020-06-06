@@ -32,9 +32,9 @@ class Boid {
     this.pos_x = 50;
     this.pos_y = 50;
     this.orientation = 0.;
-
-    this.vel_x = 1;
-    this.vel_y = 0;
+    
+    this.speed = 1;
+    this.d_orientation = .1;
   }
 
   draw() {
@@ -51,8 +51,9 @@ class Boid {
   }
 
   step() {
-    this.pos_x += this.vel_x;
-    this.pos_y += this.vel_y;
+    this.orientation += this.d_orientation;
+    this.pos_x += this.speed * cos(this.orientation);
+    this.pos_y += this.speed * sin(this.orientation);
   }
 }
 
@@ -64,7 +65,7 @@ function setup() {
 
 function draw() {
   clear();
-  
+
   draw_coord_arrow(0., color('red'));
   draw_coord_arrow(HALF_PI, color('green'));
 
