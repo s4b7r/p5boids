@@ -46,8 +46,9 @@ const BOID_FACTOR_AGAINST_COLLISION = 1e9;
 const BOID_VIEWDIST_AGAINST_COLLISION = 50;
 const BOID_VIEWDIST_AGAINST_WALL = 100;
 const BOID_FACTOR_AGAINST_WALL = 1e11;
-const BOID_VIEWDIST_ALIGNMENT = 100;
-const BIOD_FACTOR_ALIGNMENT = 1e2;
+const BOID_VIEWDIST_ALIGNMENT = 50;
+const BOID_FACTOR_ALIGNMENT = 1e2;
+const BOID_SPEED = 1;
 
 class Boid {
   constructor(pos_x, pos_y, ori) {
@@ -55,13 +56,13 @@ class Boid {
     this.pos_y = pos_y;
     this.orientation = ori;
     
-    this.speed = 1;
+    this.speed = BOID_SPEED;
 
     this.viewdist_center = BOID_VIEWDIST_CENTER;
     this.factor_against_wall = BOID_FACTOR_AGAINST_WALL;
     this.viewdist_against_wall = BOID_VIEWDIST_AGAINST_WALL;
     this.viewdist_alignment = BOID_VIEWDIST_ALIGNMENT;
-    this.factor_alignment = BIOD_FACTOR_ALIGNMENT;
+    this.factor_alignment = BOID_FACTOR_ALIGNMENT;
 
     this._draw_debug = false;
   }
@@ -263,7 +264,7 @@ function get_vector_length(vec) {
 }
 
 var boids = [];
-const NUM_BOIDS = 50;
+const NUM_BOIDS = 100;
 const FIELD_HEIGHT = 800;
 const FIELD_WIDTH = 800;
 
