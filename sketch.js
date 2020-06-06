@@ -46,6 +46,8 @@ const BOID_FACTOR_AGAINST_COLLISION = 1e9;
 const BOID_VIEWDIST_AGAINST_COLLISION = 50;
 const BOID_VIEWDIST_AGAINST_WALL = 100;
 const BOID_FACTOR_AGAINST_WALL = 1e11;
+const BOID_VIEWDIST_ALIGNMENT = 100;
+const BIOD_FACTOR_ALIGNMENT = 1;
 
 class Boid {
   constructor(pos_x, pos_y) {
@@ -58,6 +60,8 @@ class Boid {
     this.viewdist_center = BOID_VIEWDIST_CENTER;
     this.factor_against_wall = BOID_FACTOR_AGAINST_WALL;
     this.viewdist_against_wall = BOID_VIEWDIST_AGAINST_WALL;
+    this.viewdist_alignment = BOID_VIEWDIST_ALIGNMENT;
+    this.factor_alignment = BIOD_FACTOR_ALIGNMENT;
 
     this._draw_debug = false;
   }
@@ -96,6 +100,10 @@ class Boid {
     target_direction.x += direction_against_wall.x * this.factor_against_wall;
     target_direction.y += direction_against_wall.y * this.factor_against_wall;
 
+    var direction_alignments = this.get_direction_for_alignments(boids);
+    target_direction.x += direction_alignments.x * this.factor_alignment;
+    target_direction.y += direction_alignments.y * this.factor_alignment;
+
     if (this._draw_debug) {
       stroke('yellow');
       line(this.pos_x, this.pos_y, this.pos_x + target_direction.x * 10, this.pos_y + target_direction.y * 10)
@@ -104,6 +112,36 @@ class Boid {
 
     this.pos_x += this.speed * cos(this.orientation);
     this.pos_y += this.speed * sin(this.orientation);
+  }
+
+  get_direction_for_alignments(boids) {
+    var dir = {x: 0, y: 0};
+    var count = 0;
+    boids.forEach(function (boid, boid_id, boids_) {
+      if (get_vector_length(this.get_vector_to_position(boid.position)) <= this.viewdist_alignment && boid != this) {
+        var next = this.get_direction_for_alignment(boid);
+        dir.x += next.x;
+        dir.y += next.y;
+        count += 1;
+      }
+    }, this);
+    if (count >= 1) {
+      dir.x /= count;
+      dir.y /= count;
+    }
+    return dir;
+  }
+
+  get direction() {
+    return {
+      x: cos(this.orientation),
+      y: sin(this.orientation)
+    }
+  }
+
+  get_direction_for_alignment(boid) {
+    var dir = boid.direction;
+    return dir;
   }
 
   get_direction_against_wall() {
