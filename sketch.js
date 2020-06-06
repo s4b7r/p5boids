@@ -23,7 +23,7 @@ function draw_coord_arrow(orientation, head_color) {
   triangle(coord_arrow_head_x1, coord_arrow_head_y1, coord_arrow_head_x2, coord_arrow_head_y2, coord_arrow_head_x3, coord_arrow_head_y3);
 }
 
-const BOID_LEN_FRONT = 20;
+const BOID_LEN_FRONT = 10;
 const BOID_LEN_BACK = BOID_LEN_FRONT / 2;
 const BOID_BACK_ANGLE = .4
 
