@@ -26,6 +26,7 @@ function draw_coord_arrow(orientation, head_color) {
 const BOID_LEN_FRONT = 10;
 const BOID_LEN_BACK = BOID_LEN_FRONT / 2;
 const BOID_BACK_ANGLE = .4
+const BOID_ORIENTATION_INERTIA = 0
 
 class Boid {
   constructor(pos_x, pos_y) {
@@ -51,9 +52,17 @@ class Boid {
   }
 
   step() {
-    this.orientation += this.d_orientation;
+    this.steer_toward({x: FIELD_WIDTH / 2, y: FIELD_HEIGHT / 2});
     this.pos_x += this.speed * cos(this.orientation);
     this.pos_y += this.speed * sin(this.orientation);
+  }
+
+  steer_toward(target) {
+    var target_vector_x = target.x - this.pos_x;
+    var target_vector_y = target.y - this.pos_y;
+    var target_orientation = atan2(target_vector_y, target_vector_x);
+    var orientation_difference = target_orientation - this.orientation;
+    this.orientation += orientation_difference * (1 - BOID_ORIENTATION_INERTIA);
   }
 }
 
