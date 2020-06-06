@@ -73,9 +73,9 @@ class Boid {
     this.steer_toward(target);
   }
 
-  steer_toward(target) {
-    var target_vector_x = target.x - this.pos_x;
-    var target_vector_y = target.y - this.pos_y;
+  steer_toward(target_pos) {
+    var target_vector_x = target_pos.x - this.pos_x;
+    var target_vector_y = target_pos.y - this.pos_y;
     var target_orientation = atan2(target_vector_y, target_vector_x);
     var orientation_difference = target_orientation - rad_into_nPi2Pi(this.orientation);
     orientation_difference = rad_into_nPi2Pi(orientation_difference);
