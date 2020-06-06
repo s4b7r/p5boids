@@ -1,3 +1,5 @@
+const EPSILON = 1e-5;
+
 const COORD_ARROWS_OFFSET_X = 5;
 const COORD_ARROWS_OFFSET_Y = 5;
 const COORD_ARROW_HEAD_WIDTH = 10;
@@ -39,6 +41,7 @@ const BOID_LEN_FRONT = 10;
 const BOID_LEN_BACK = BOID_LEN_FRONT / 2;
 const BOID_BACK_ANGLE = .4
 const BOID_ORIENTATION_INERTIA = .98;
+const BOID_VIEWDIST_CENTER = 150;
 
 class Boid {
   constructor(pos_x, pos_y) {
@@ -47,6 +50,8 @@ class Boid {
     this.orientation = 0.;
     
     this.speed = 1;
+
+    this.viewdist_center = BOID_VIEWDIST_CENTER;
   }
 
   draw() {
@@ -81,18 +86,18 @@ class Boid {
   }
 
   get_direction_for_center_of_mass(boids) {
-    return this.get_target_direction_for_position(Boid.get_boids_center_of_mass(boids));
+    return this.get_target_direction_for_position(this.get_boids_center_of_mass(boids));
   }
 
   steer_toward_center_of_mass(boids) {
-    var target = Boid.get_boids_center_of_mass(boids);
+    var target = this.get_boids_center_of_mass(boids);
     this.steer_toward(target);
   }
 
   get_target_direction_for_position(target_pos) {
     var target_vector_x = target_pos.x - this.pos_x;
     var target_vector_y = target_pos.y - this.pos_y;
-    var vector_length = sqrt(pow(target_vector_x, 2) + pow(target_vector_y, 2));
+    var vector_length = sqrt(pow(target_vector_x, 2) + pow(target_vector_y, 2)) + EPSILON;
     return {
       x: target_vector_x / vector_length,
       y: target_vector_y / vector_length
@@ -104,20 +109,44 @@ class Boid {
     this.steer_toward_direction(target_direction);
   }
 
-  static get_boids_center_of_mass(boids) {
+  get_boids_center_of_mass(boids) {
     var boids_x = 0;
     var boids_y = 0;
+    var count = 0;
     boids.forEach(function(boid, boid_id, boids_) {
-      boids_x += boid.pos_x;
-      boids_y += boid.pos_y;
-    })
-    boids_x /= boids.length;
-    boids_y /= boids.length;
+      if (get_vector_length(this.get_vector_to_position(boid.position)) <= this.viewdist_center) {
+        boids_x += boid.pos_x;
+        boids_y += boid.pos_y;
+        count += 1;
+      }
+    }, this)
+    if (count >= 1) {
+      boids_x /= count;
+      boids_y /= count;
+    }
     return {
       x: boids_x,
       y: boids_y
     };
   }
+
+  get_vector_to_position(pos) {
+    return {
+      x: pos.x - this.pos_x,
+      y: pos.y - this.pos_y
+    };
+  }
+
+  get position() {
+    return {
+      x: this.pos_x,
+      y: this.pos_y
+    };
+  }
+}
+
+function get_vector_length(vec) {
+  return sqrt(pow(vec.x, 2) + pow(vec.y, 2));
 }
 
 var boids = [];
