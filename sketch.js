@@ -23,6 +23,31 @@ function draw_coord_arrow(orientation, head_color) {
   triangle(coord_arrow_head_x1, coord_arrow_head_y1, coord_arrow_head_x2, coord_arrow_head_y2, coord_arrow_head_x3, coord_arrow_head_y3);
 }
 
+const BOID_LEN_FRONT = 20;
+const BOID_LEN_BACK = BOID_LEN_FRONT / 2;
+const BOID_BACK_ANGLE = .4
+
+class Boid {
+  constructor() {
+    this.pos_x = 50;
+    this.pos_y = 50;
+    this.orientation = 0.;
+  }
+
+  draw() {
+    var boid_triangle_x1 = this.pos_x + BOID_LEN_FRONT * cos(this.orientation);
+    var boid_triangle_y1 = this.pos_y - BOID_LEN_FRONT * sin(this.orientation);
+    var boid_triangle_x2 = this.pos_x + BOID_LEN_BACK * cos(this.orientation + Math.PI * (1 - BOID_BACK_ANGLE / 2));
+    var boid_triangle_y2 = this.pos_y - BOID_LEN_BACK * sin(this.orientation + Math.PI * (1 - BOID_BACK_ANGLE / 2));
+    var boid_triangle_x3 = this.pos_x + BOID_LEN_BACK * cos(this.orientation + Math.PI * (1 + BOID_BACK_ANGLE / 2));
+    var boid_triangle_y3 = this.pos_y - BOID_LEN_BACK * sin(this.orientation + Math.PI * (1 + BOID_BACK_ANGLE / 2));
+
+    noFill();
+    stroke(color('black'));
+    triangle(boid_triangle_x1, boid_triangle_y1, boid_triangle_x2, boid_triangle_y2, boid_triangle_x3, boid_triangle_y3);
+  }
+}
+
 function setup() {
   // put setup code here
 }
@@ -31,22 +56,6 @@ function draw() {
   draw_coord_arrow(0., color('red'));
   draw_coord_arrow(Math.PI / 2, color('green'));
 
-  var boid_x = 50;
-  var boid_y = 50;
-  var boid_orientation = 0.;
-
-  const BOID_LEN_FRONT = 20;
-  const BOID_LEN_BACK = BOID_LEN_FRONT / 2;
-  const BOID_BACK_ANGLE = .4
-
-  var boid_triangle_x1 = boid_x + BOID_LEN_FRONT * cos(boid_orientation);
-  var boid_triangle_y1 = boid_y - BOID_LEN_FRONT * sin(boid_orientation);
-  var boid_triangle_x2 = boid_x + BOID_LEN_BACK * cos(boid_orientation + Math.PI * (1 - BOID_BACK_ANGLE / 2));
-  var boid_triangle_y2 = boid_y - BOID_LEN_BACK * sin(boid_orientation + Math.PI * (1 - BOID_BACK_ANGLE / 2));
-  var boid_triangle_x3 = boid_x + BOID_LEN_BACK * cos(boid_orientation + Math.PI * (1 + BOID_BACK_ANGLE / 2));
-  var boid_triangle_y3 = boid_y - BOID_LEN_BACK * sin(boid_orientation + Math.PI * (1 + BOID_BACK_ANGLE / 2));
-
-  noFill();
-  stroke(color('black'));
-  triangle(boid_triangle_x1, boid_triangle_y1, boid_triangle_x2, boid_triangle_y2, boid_triangle_x3, boid_triangle_y3);
+  var boid = new Boid();
+  boid.draw();
 }
