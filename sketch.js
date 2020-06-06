@@ -23,10 +23,22 @@ function draw_coord_arrow(orientation, head_color) {
   triangle(coord_arrow_head_x1, coord_arrow_head_y1, coord_arrow_head_x2, coord_arrow_head_y2, coord_arrow_head_x3, coord_arrow_head_y3);
 }
 
+function rad_into_nPi2Pi(rad) {
+  var value = rad % TWO_PI;
+  if (value > PI) {
+    value -= TWO_PI;
+  } else if (value < -PI) {
+    value += TWO_PI;
+  }
+  console.assert(value <= PI, value);
+  console.assert(value >= -PI, value);
+  return value;
+}
+
 const BOID_LEN_FRONT = 10;
 const BOID_LEN_BACK = BOID_LEN_FRONT / 2;
 const BOID_BACK_ANGLE = .4
-const BOID_ORIENTATION_INERTIA = 0
+const BOID_ORIENTATION_INERTIA = .98;
 
 class Boid {
   constructor(pos_x, pos_y) {
@@ -35,7 +47,6 @@ class Boid {
     this.orientation = 0.;
     
     this.speed = 1;
-    this.d_orientation = .1;
   }
 
   draw() {
@@ -66,7 +77,8 @@ class Boid {
     var target_vector_x = target.x - this.pos_x;
     var target_vector_y = target.y - this.pos_y;
     var target_orientation = atan2(target_vector_y, target_vector_x);
-    var orientation_difference = target_orientation - this.orientation;
+    var orientation_difference = target_orientation - rad_into_nPi2Pi(this.orientation);
+    orientation_difference = rad_into_nPi2Pi(orientation_difference);
     this.orientation += orientation_difference * (1 - BOID_ORIENTATION_INERTIA);
   }
 
