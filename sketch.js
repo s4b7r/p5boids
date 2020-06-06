@@ -32,6 +32,9 @@ class Boid {
     this.pos_x = 50;
     this.pos_y = 50;
     this.orientation = 0.;
+
+    this.vel_x = 1;
+    this.vel_y = 0;
   }
 
   draw() {
@@ -46,16 +49,23 @@ class Boid {
     stroke(color('black'));
     triangle(boid_triangle_x1, boid_triangle_y1, boid_triangle_x2, boid_triangle_y2, boid_triangle_x3, boid_triangle_y3);
   }
+
+  step() {
+    this.pos_x += this.vel_x;
+    this.pos_y += this.vel_y;
+  }
 }
 
+var boid;
+
 function setup() {
-  // put setup code here
+  boid = new Boid();
 }
 
 function draw() {
   draw_coord_arrow(0., color('red'));
   draw_coord_arrow(HALF_PI, color('green'));
 
-  var boid = new Boid();
+  boid.step();
   boid.draw();
 }
