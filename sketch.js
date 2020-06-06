@@ -58,12 +58,16 @@ class Boid {
 }
 
 var boids = [];
+const NUM_BOIDS = 10;
+const FIELD_HEIGHT = 500;
+const FIELD_WIDTH = 500;
 
 function setup() {
-  createCanvas(500, 500);
+  createCanvas(FIELD_WIDTH, FIELD_HEIGHT);
 
-  boids.push(new Boid(50, 50));
-  boids.push(new Boid(100, 100));
+  for (boid_id = 0; boid_id < NUM_BOIDS; boid_id++) {
+    boids.push(new Boid(random(FIELD_WIDTH - BOID_LEN_FRONT - BOID_LEN_BACK), random(FIELD_HEIGHT - BOID_LEN_FRONT - BOID_LEN_BACK)));
+  }
 }
 
 function draw() {
