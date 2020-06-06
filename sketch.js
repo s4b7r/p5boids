@@ -1,12 +1,35 @@
+const COORD_ARROWS_OFFSET_X = 5;
+const COORD_ARROWS_OFFSET_Y = 5;
+const COORD_ARROW_HEAD_WIDTH = 10;
+const COORD_ARROWS_CENTER_X = COORD_ARROW_HEAD_WIDTH / 2 + COORD_ARROWS_OFFSET_X;
+const COORD_ARROWS_CENTER_Y = COORD_ARROW_HEAD_WIDTH / 2 + COORD_ARROWS_OFFSET_Y;
+const COORD_ARROWS_LINE_LENGTH = 20;
+const COORD_ARROW_HEAD_LEN = 10;
+
+function draw_coord_arrow(orientation, head_color) {
+  var coord_arrow_orientation = orientation;
+  var coord_arrow_head_base_x = COORD_ARROWS_CENTER_X + COORD_ARROWS_LINE_LENGTH * cos(coord_arrow_orientation);
+  var coord_arrow_head_base_y = COORD_ARROWS_CENTER_Y + COORD_ARROWS_LINE_LENGTH * sin(coord_arrow_orientation);
+  stroke(color('black'));
+  line(COORD_ARROWS_CENTER_X, COORD_ARROWS_CENTER_Y, coord_arrow_head_base_x, coord_arrow_head_base_y);
+
+  var coord_arrow_head_x1 = coord_arrow_head_base_x + COORD_ARROW_HEAD_LEN * cos(coord_arrow_orientation );
+  var coord_arrow_head_y1 = coord_arrow_head_base_y + COORD_ARROW_HEAD_LEN * sin(coord_arrow_orientation );
+  var coord_arrow_head_x2 = coord_arrow_head_base_x + COORD_ARROW_HEAD_WIDTH / 2 * cos(coord_arrow_orientation + Math.PI * .5);
+  var coord_arrow_head_y2 = coord_arrow_head_base_y + COORD_ARROW_HEAD_WIDTH / 2 * sin(coord_arrow_orientation + Math.PI * .5);
+  var coord_arrow_head_x3 = coord_arrow_head_base_x + COORD_ARROW_HEAD_WIDTH / 2 * cos(coord_arrow_orientation + Math.PI * 1.5);
+  var coord_arrow_head_y3 = coord_arrow_head_base_y + COORD_ARROW_HEAD_WIDTH / 2 * sin(coord_arrow_orientation + Math.PI * 1.5);
+  fill(head_color);
+  triangle(coord_arrow_head_x1, coord_arrow_head_y1, coord_arrow_head_x2, coord_arrow_head_y2, coord_arrow_head_x3, coord_arrow_head_y3);
+}
+
 function setup() {
   // put setup code here
 }
 
 function draw() {
-  fill(color('red'));
-  triangle(15, 4, 5, 0, 5, 10);
-  fill(color('green'));
-  triangle(4, 15, 0, 5, 10, 5);
+  draw_coord_arrow(0., color('red'));
+  draw_coord_arrow(Math.PI / 2, color('green'));
 
   var boid_x = 50;
   var boid_y = 50;
