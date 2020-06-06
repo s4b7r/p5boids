@@ -46,7 +46,7 @@ class Boid {
     var boid_triangle_y3 = this.pos_y + BOID_LEN_BACK * sin(this.orientation + PI * (1 + BOID_BACK_ANGLE / 2));
 
     noFill();
-    stroke(color('black'));
+    stroke(color('white'));
     triangle(boid_triangle_x1, boid_triangle_y1, boid_triangle_x2, boid_triangle_y2, boid_triangle_x3, boid_triangle_y3);
   }
 
@@ -61,13 +61,14 @@ var boids = [];
 
 function setup() {
   createCanvas(500, 500);
-  
+
   boids.push(new Boid(50, 50));
   boids.push(new Boid(100, 100));
 }
 
 function draw() {
   clear();
+  background('gray');
 
   draw_coord_arrow(0., color('red'));
   draw_coord_arrow(HALF_PI, color('green'));
