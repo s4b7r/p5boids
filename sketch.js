@@ -63,6 +63,8 @@ function setup() {
 }
 
 function draw() {
+  clear();
+  
   draw_coord_arrow(0., color('red'));
   draw_coord_arrow(HALF_PI, color('green'));
 
