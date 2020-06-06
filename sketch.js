@@ -40,7 +40,7 @@ function rad_into_nPi2Pi(rad) {
 const BOID_LEN_FRONT = 10;
 const BOID_LEN_BACK = BOID_LEN_FRONT / 2;
 const BOID_BACK_ANGLE = .4
-const BOID_ORIENTATION_INERTIA = .98;
+const BOID_ORIENTATION_INERTIA = .96;
 const BOID_VIEWDIST_CENTER = 150;
 
 class Boid {
