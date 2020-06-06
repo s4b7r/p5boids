@@ -52,6 +52,12 @@ class Boid {
     this.speed = 1;
 
     this.viewdist_center = BOID_VIEWDIST_CENTER;
+
+    this._draw_debug = false;
+  }
+
+  set draw_debug(flag) {
+    this._draw_debug = flag;
   }
 
   draw() {
@@ -64,11 +70,21 @@ class Boid {
 
     noFill();
     stroke(color('white'));
+    if (this._draw_debug) {
+      stroke('yellow');
+    }
     triangle(boid_triangle_x1, boid_triangle_y1, boid_triangle_x2, boid_triangle_y2, boid_triangle_x3, boid_triangle_y3);
   }
 
   step() {
     var target_direction_for_center_of_mass = this.get_direction_for_center_of_mass(boids);
+    var target_direction = {x: 0, y: 0};
+    target_direction.x += target_direction_for_center_of_mass.x;
+    target_direction.y += target_direction_for_center_of_mass.y;
+    if (this._draw_debug) {
+      stroke('yellow');
+      line(this.pos_x, this.pos_y, this.pos_x + target_direction.x * 10, this.pos_y + target_direction.y * 10)
+    }
     this.steer_toward_direction(target_direction_for_center_of_mass);
     this.pos_x += this.speed * cos(this.orientation);
     this.pos_y += this.speed * sin(this.orientation);
@@ -160,6 +176,7 @@ function setup() {
   for (boid_id = 0; boid_id < NUM_BOIDS; boid_id++) {
     boids.push(new Boid(random(FIELD_WIDTH - BOID_LEN_FRONT - BOID_LEN_BACK), random(FIELD_HEIGHT - BOID_LEN_FRONT - BOID_LEN_BACK)));
   }
+  boids[0].draw_debug = true;
 }
 
 function draw() {
