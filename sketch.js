@@ -52,9 +52,14 @@ class Boid {
   }
 
   step() {
-    this.steer_toward({x: FIELD_WIDTH / 2, y: FIELD_HEIGHT / 2});
+    this.steer_toward_center_of_mass(boids);
     this.pos_x += this.speed * cos(this.orientation);
     this.pos_y += this.speed * sin(this.orientation);
+  }
+
+  steer_toward_center_of_mass(boids) {
+    var target = Boid.get_boids_center_of_mass(boids);
+    this.steer_toward(target);
   }
 
   steer_toward(target) {
@@ -63,6 +68,21 @@ class Boid {
     var target_orientation = atan2(target_vector_y, target_vector_x);
     var orientation_difference = target_orientation - this.orientation;
     this.orientation += orientation_difference * (1 - BOID_ORIENTATION_INERTIA);
+  }
+
+  static get_boids_center_of_mass(boids) {
+    var boids_x = 0;
+    var boids_y = 0;
+    boids.forEach(function(boid, boid_id, boids_) {
+      boids_x += boid.pos_x;
+      boids_y += boid.pos_y;
+    })
+    boids_x /= boids.length;
+    boids_y /= boids.length;
+    return {
+      x: boids_x,
+      y: boids_y
+    };
   }
 }
 
