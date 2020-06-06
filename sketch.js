@@ -3,5 +3,8 @@ function setup() {
 }
 
 function draw() {
-  // put drawing code here
+  fill(color('red'));
+  triangle(15, 4, 5, 0, 5, 10);
+  fill(color('green'));
+  triangle(4, 15, 0, 5, 10, 5);
 }
