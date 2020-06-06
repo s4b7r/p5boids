@@ -39,11 +39,11 @@ class Boid {
 
   draw() {
     var boid_triangle_x1 = this.pos_x + BOID_LEN_FRONT * cos(this.orientation);
-    var boid_triangle_y1 = this.pos_y - BOID_LEN_FRONT * sin(this.orientation);
+    var boid_triangle_y1 = this.pos_y + BOID_LEN_FRONT * sin(this.orientation);
     var boid_triangle_x2 = this.pos_x + BOID_LEN_BACK * cos(this.orientation + PI * (1 - BOID_BACK_ANGLE / 2));
-    var boid_triangle_y2 = this.pos_y - BOID_LEN_BACK * sin(this.orientation + PI * (1 - BOID_BACK_ANGLE / 2));
+    var boid_triangle_y2 = this.pos_y + BOID_LEN_BACK * sin(this.orientation + PI * (1 - BOID_BACK_ANGLE / 2));
     var boid_triangle_x3 = this.pos_x + BOID_LEN_BACK * cos(this.orientation + PI * (1 + BOID_BACK_ANGLE / 2));
-    var boid_triangle_y3 = this.pos_y - BOID_LEN_BACK * sin(this.orientation + PI * (1 + BOID_BACK_ANGLE / 2));
+    var boid_triangle_y3 = this.pos_y + BOID_LEN_BACK * sin(this.orientation + PI * (1 + BOID_BACK_ANGLE / 2));
 
     noFill();
     stroke(color('black'));
