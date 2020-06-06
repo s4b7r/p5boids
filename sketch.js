@@ -47,7 +47,7 @@ const BOID_VIEWDIST_AGAINST_COLLISION = 50;
 const BOID_VIEWDIST_AGAINST_WALL = 100;
 const BOID_FACTOR_AGAINST_WALL = 1e11;
 const BOID_VIEWDIST_ALIGNMENT = 100;
-const BIOD_FACTOR_ALIGNMENT = 1;
+const BIOD_FACTOR_ALIGNMENT = 1e2;
 
 class Boid {
   constructor(pos_x, pos_y) {
@@ -263,9 +263,9 @@ function get_vector_length(vec) {
 }
 
 var boids = [];
-const NUM_BOIDS = 10;
-const FIELD_HEIGHT = 500;
-const FIELD_WIDTH = 500;
+const NUM_BOIDS = 50;
+const FIELD_HEIGHT = 800;
+const FIELD_WIDTH = 800;
 
 function setup() {
   createCanvas(FIELD_WIDTH, FIELD_HEIGHT);
