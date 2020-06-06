@@ -42,6 +42,8 @@ const BOID_LEN_BACK = BOID_LEN_FRONT / 2;
 const BOID_BACK_ANGLE = .4
 const BOID_ORIENTATION_INERTIA = .96;
 const BOID_VIEWDIST_CENTER = 150;
+const BOID_FACTOR_AGAINST_COLLISION = 1e10;
+const BOID_VIEWDIST_AGAINST_COLLISION = 50;
 
 class Boid {
   constructor(pos_x, pos_y) {
@@ -81,13 +83,59 @@ class Boid {
     var target_direction = {x: 0, y: 0};
     target_direction.x += target_direction_for_center_of_mass.x;
     target_direction.y += target_direction_for_center_of_mass.y;
+    
+    var direction_against_collisions = this.get_direction_against_collisions(boids);
+    target_direction.x += direction_against_collisions.x * BOID_FACTOR_AGAINST_COLLISION;
+    target_direction.y += direction_against_collisions.y * BOID_FACTOR_AGAINST_COLLISION;
+
     if (this._draw_debug) {
       stroke('yellow');
       line(this.pos_x, this.pos_y, this.pos_x + target_direction.x * 10, this.pos_y + target_direction.y * 10)
     }
-    this.steer_toward_direction(target_direction_for_center_of_mass);
+    this.steer_toward_direction(target_direction);
+
     this.pos_x += this.speed * cos(this.orientation);
     this.pos_y += this.speed * sin(this.orientation);
+  }
+
+  get_direction_against_collisions(boids) {
+    var dir = {x: 0, y: 0};
+    var count = 0;
+    boids.forEach(function (boid, boid_id, boids_) {
+      if (get_vector_length(this.get_vector_to_position(boid.position)) <= BOID_VIEWDIST_AGAINST_COLLISION && boid != this) {
+        var next = this.get_direction_against_collision(boid);
+        dir.x += next.x;
+        dir.y += next.y;
+        count += 1;
+      }
+    }, this);
+    if (count >= 1) {
+      dir.x /= count;
+      dir.y /= count;
+    }
+    return dir;
+  }
+
+  get position() {
+    return {
+      x: this.pos_x,
+      y: this.pos_y
+    };
+  }
+
+  get_direction_against_collision(boid) {
+    var vec = this.get_vector_to_position(boid.position);
+    var dir = this.get_target_direction_for_position(boid.position);
+    dir.x *= -1 / exp(get_vector_length(vec));
+    dir.y *= -1 / exp(get_vector_length(vec));
+    return dir;
+  }
+
+  get_vector_to_position(pos) {
+    return {
+      x: pos.x - this.pos_x,
+      y: pos.y - this.pos_y
+    };
   }
 
   steer_toward_orientation(target_orientation) {
@@ -143,20 +191,6 @@ class Boid {
     return {
       x: boids_x,
       y: boids_y
-    };
-  }
-
-  get_vector_to_position(pos) {
-    return {
-      x: pos.x - this.pos_x,
-      y: pos.y - this.pos_y
-    };
-  }
-
-  get position() {
-    return {
-      x: this.pos_x,
-      y: this.pos_y
     };
   }
 }
