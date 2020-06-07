@@ -47,9 +47,12 @@ const BOID_VIEWDIST_AGAINST_COLLISION = 50;
 const BOID_VIEWDIST_AGAINST_WALL = 100;
 const BOID_FACTOR_AGAINST_WALL = 1e11;
 const BOID_VIEWDIST_ALIGNMENT = 50;
-const BOID_FACTOR_ALIGNMENT = 1;
-const BOID_SPEED = 1;
+const BOID_FACTOR_ALIGNMENT = 2;
+const BOID_SPEED = 2;
 const BOID_FACTOR_CENTER = 1;
+
+var num_boids_outside_field = 0;
+var num_boids_outside_field_last = 0;
 
 class Boid {
   constructor(pos_x, pos_y, ori) {
@@ -115,6 +118,10 @@ class Boid {
 
     this.pos_x += this.speed * cos(this.orientation);
     this.pos_y += this.speed * sin(this.orientation);
+
+    if (this.pos_x < 0 || this.pos_x > FIELD_WIDTH || this.pos_y < 0 || this.pos_y > FIELD_HEIGHT) {
+      num_boids_outside_field += 1;
+    }
   }
 
   get_direction_for_alignments(boids) {
@@ -288,8 +295,13 @@ function draw() {
   draw_coord_arrow(0., color('red'));
   draw_coord_arrow(HALF_PI, color('green'));
 
+  num_boids_outside_field = 0;
   boids.forEach(function(boid, boid_id, boids_) {
     boid.step();
     boid.draw();
   })
+  if (num_boids_outside_field > num_boids_outside_field_last) {
+    console.log(num_boids_outside_field);
+  }
+  num_boids_outside_field_last = num_boids_outside_field;
 }
