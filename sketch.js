@@ -47,8 +47,9 @@ const BOID_VIEWDIST_AGAINST_COLLISION = 50;
 const BOID_VIEWDIST_AGAINST_WALL = 100;
 const BOID_FACTOR_AGAINST_WALL = 1e11;
 const BOID_VIEWDIST_ALIGNMENT = 50;
-const BOID_FACTOR_ALIGNMENT = 1e2;
+const BOID_FACTOR_ALIGNMENT = 1;
 const BOID_SPEED = 1;
+const BOID_FACTOR_CENTER = 1;
 
 class Boid {
   constructor(pos_x, pos_y, ori) {
@@ -63,6 +64,7 @@ class Boid {
     this.viewdist_against_wall = BOID_VIEWDIST_AGAINST_WALL;
     this.viewdist_alignment = BOID_VIEWDIST_ALIGNMENT;
     this.factor_alignment = BOID_FACTOR_ALIGNMENT;
+    this.factor_center = BOID_FACTOR_CENTER;
 
     this._draw_debug = false;
   }
@@ -90,8 +92,8 @@ class Boid {
   step() {
     var target_direction_for_center_of_mass = this.get_direction_for_center_of_mass(boids);
     var target_direction = {x: 0, y: 0};
-    target_direction.x += target_direction_for_center_of_mass.x;
-    target_direction.y += target_direction_for_center_of_mass.y;
+    target_direction.x += target_direction_for_center_of_mass.x * this.factor_center;
+    target_direction.y += target_direction_for_center_of_mass.y * this.factor_center;
     
     var direction_against_collisions = this.get_direction_against_collisions(boids);
     target_direction.x += direction_against_collisions.x * BOID_FACTOR_AGAINST_COLLISION;
