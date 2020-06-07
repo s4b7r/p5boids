@@ -48,7 +48,7 @@ const BOID_VIEWDIST_AGAINST_WALL = 100;
 const BOID_FACTOR_AGAINST_WALL = 1e11;
 const BOID_VIEWDIST_ALIGNMENT = 50;
 const BOID_FACTOR_ALIGNMENT = 2;
-const BOID_SPEED = 2;
+const BOID_SPEED = 3;
 const BOID_FACTOR_CENTER = 1;
 
 var num_boids_outside_field = 0;
@@ -155,18 +155,20 @@ class Boid {
   }
 
   get_direction_against_wall() {
+    const FIELD_LEFT = 0;
+    const FIELD_TOP = 0;
     var fake_boids = [];
-    if (this.pos_x <= 0 + this.viewdist_against_wall) {
-      fake_boids.push({position: {x: 0, y: this.pos_y}});
+    if (this.pos_x <= FIELD_LEFT + this.viewdist_against_wall) {
+      fake_boids.push({position: {x: min(FIELD_LEFT, this.pos_x - BOID_LEN_FRONT), y: this.pos_y}});
     }
     if (this.pos_x >= FIELD_WIDTH - this.viewdist_against_wall) {
-      fake_boids.push({position: {x: FIELD_WIDTH, y: this.pos_y}});
+      fake_boids.push({position: {x: max(FIELD_LEFT, this.pos_x + BOID_LEN_FRONT), y: this.pos_y}});
     }
-    if (this.pos_y <= 0 + this.viewdist_against_wall) {
-      fake_boids.push({position: {x: this.pos_x, y: 0}});
+    if (this.pos_y <= FIELD_TOP + this.viewdist_against_wall) {
+      fake_boids.push({position: {x: this.pos_x, y: min(FIELD_TOP, this.pos_y - BOID_LEN_FRONT)}});
     }
     if (this.pos_y >= FIELD_WIDTH - this.viewdist_against_wall) {
-      fake_boids.push({position: {x: this.pos_x, y: FIELD_HEIGHT}});
+      fake_boids.push({position: {x: this.pos_x, y: max(FIELD_TOP, this.pos_y + BOID_LEN_FRONT)}});
     }
     return this.get_direction_against_collisions(fake_boids);
   }
@@ -300,7 +302,7 @@ function draw() {
     boid.step();
     boid.draw();
   })
-  if (num_boids_outside_field > num_boids_outside_field_last) {
+  if (num_boids_outside_field != num_boids_outside_field_last) {
     console.log(num_boids_outside_field);
   }
   num_boids_outside_field_last = num_boids_outside_field;
